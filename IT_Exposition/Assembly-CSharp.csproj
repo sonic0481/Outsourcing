@@ -67,15 +67,15 @@
     <Compile Include="Assets\Scripts\Common\Enums.cs" />
     <Compile Include="Assets\Scripts\Scene\SceneManager.cs" />
     <Compile Include="Assets\Scripts\Data\QuestionData.cs" />
+    <Compile Include="Assets\Scripts\Scene\InformationScene.cs" />
     <Compile Include="Assets\Scripts\Utility\NonDrawingGraphic.cs" />
     <Compile Include="Assets\Scripts\Scene\MainApp.cs" />
     <Compile Include="Assets\Scripts\Table\DefTable.cs" />
+    <Compile Include="Assets\Scripts\Scene\TitleScene.cs" />
     <Compile Include="Assets\Scripts\Table\DefTable\DefQuestionTable.cs" />
     <Compile Include="Assets\Scripts\Table\DefTable\DefGiftsListTable.cs" />
     <Compile Include="Assets\Scripts\Table\CSVReader.cs" />
     <Compile Include="Assets\Scripts\Utility\MonoSingleton.cs" />
-    <Compile Include="Assets\Scripts\Scene\TitleScene.cs" />
-    <Compile Include="Assets\Scripts\Scene\InformationScene.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
