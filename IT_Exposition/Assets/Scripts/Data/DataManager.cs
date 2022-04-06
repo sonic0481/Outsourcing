@@ -5,10 +5,10 @@ using UnityEngine;
 public class DataManager : Singleton<DataManager>
 {
     private QuestionData _questionData;
-    private GiftsData _giftsData;
+    private GiftsData _giftsData;    
 
     public QuestionData QuestionData { get { return _questionData; } }
-    public GiftsData GiftsData { get { return _giftsData; } }
+    public GiftsData GiftsData { get { return _giftsData; } }    
 
     protected DataManager() { }
 

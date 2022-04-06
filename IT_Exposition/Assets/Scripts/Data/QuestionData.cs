@@ -4,11 +4,13 @@ using UnityEngine;
 
 public struct QuestionInfo
 {
-    public string content;    
+    public EVENT    questionEvent;
+    public string   content;    
     public QUESTION type;
 
-    public QuestionInfo(QUESTION _ttype, string _ccontent)
+    public QuestionInfo(EVENT _questionEvent, QUESTION _ttype, string _ccontent)
     {
+        questionEvent = _questionEvent;
         type = _ttype;
         content = _ccontent;
     }
@@ -27,10 +29,13 @@ public class QuestionData
     public void SetAge(AGE age) { _selectedAgeInfo = age; }
     public AGE GetAge() { return _selectedAgeInfo; }
 
+    public EVENT SelectEvent { set; get; }
+    public List<DefQuestionTable.Data> QuestionList { set; get; } = new List<DefQuestionTable.Data>();
+
     public void AwakeInit()
     {
-        _questionInfo[(int)QUESTION.Q1] = new QuestionInfo(QUESTION.Q1, "전반적으로 만족 하시나요?");
-        _questionInfo[(int)QUESTION.Q2] = new QuestionInfo(QUESTION.Q2, "앱을 추천할 의향이 있으신가요?");        
+        //_questionInfo[(int)QUESTION.Q1] = new QuestionInfo(QUESTION.Q1, "전반적으로 만족 하시나요?");
+        //_questionInfo[(int)QUESTION.Q2] = new QuestionInfo(QUESTION.Q2, "앱을 추천할 의향이 있으신가요?");        
     }
 
     public void OnInit()
@@ -39,34 +44,21 @@ public class QuestionData
             _answerInfo[i] = ANSWER.NONE;
     }
 
-    public string GetAnswerText(QUESTION type)
+    public void SetQuestion(bool isRenewal)
     {
-        ANSWER answer = GetAnswer(type);
-
-        if (ANSWER.NONE == answer)
-            return "X";
-
-        return answer == ANSWER.YES ? "Y" : "N";
+        if(isRenewal)
+        {
+            QuestionList = CSVTableManager.Instance.QuestionTable.GetDataByEvent_RandomQuestion(SelectEvent);            
+        }
+        else
+        {
+            if(null == QuestionList || 0 == QuestionList.Count)
+                QuestionList = CSVTableManager.Instance.QuestionTable.GetDataByEvent_RandomQuestion(SelectEvent);
+        }   
     }
 
-    public string GetAgeText()
+    public void ResetQuestion()
     {
-        switch (_selectedAgeInfo)
-        {
-            case AGE.AGE_10:
-                return "10대";                
-            case AGE.AGE_20:
-                return "20대";
-            case AGE.AGE_30:
-                return "30대";
-            case AGE.AGE_40:
-                return "40대";
-            case AGE.AGE_50:
-                return "50대";
-            case AGE.AGE_60:
-                return "60대 이상";
-        }
-
-        return "X";
+        QuestionList?.Clear();
     }
 }

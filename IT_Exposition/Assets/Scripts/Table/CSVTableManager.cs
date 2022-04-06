@@ -11,11 +11,9 @@ public class CSVTableManager : MonoSingleton<CSVTableManager>
 {
     private Dictionary<Type, object> _dicTable = new Dictionary<Type, object>();
 
-    private DefQuestionTable _questionTable;
-    public DefQuestionTable QuestionTable => _questionTable;
+    public DefQuestionTable QuestionTable => GetTable<DefQuestionTable>();
 
-    private DefGiftsListTable _giftsListTable;
-    public DefGiftsListTable GiftsListTable => _giftsListTable;
+    public DefGiftsListTable GiftsListTable => GetTable<DefGiftsListTable>();
 
 
     private int checkCount = 1;
@@ -26,7 +24,6 @@ public class CSVTableManager : MonoSingleton<CSVTableManager>
 
     public void LoadTable<T>(string path, Action loadTableCallback = null) where T : new()
     {
-
         T t = new T();
         string fullPath = $"{PersistentDataPath}/{path}";//$"{StreamingAssetsPath}{path}";
 
@@ -67,13 +64,38 @@ public class CSVTableManager : MonoSingleton<CSVTableManager>
                 loadTableCallback?.Invoke();
             }
         });
-    }    
+    }  
+    
+    private void OnlyLoadTable<T>(string path, Action loadTableCallback = null) where T : new()
+    {
+        T t = new T();
+
+        CSVReader.ReadResources(path, (data) =>
+        {
+            IDefTable table = (IDefTable)t;
+            table.SetData(data);
+
+            if (_dicTable.ContainsKey(typeof(T)))
+            {
+                loadCount--;
+                _dicTable.Remove(typeof(T));
+            }
+
+            _dicTable.Add(typeof(T), t);
+            loadCount++;
+
+            if (IsTableLoadClear)
+            {
+                loadTableCallback?.Invoke();
+            }
+        }, null);
+    }
 
     public void InitTable(Action callback = null)
     {
         loadCount = 0;
-        
-        LoadTable<DefQuestionTable>("QuestionTable.csv", callback);
+
+        OnlyLoadTable<DefQuestionTable>("QuestionTable", callback);
     }
 
     //private void SetTableData<T>(string path) where T : new()
@@ -94,7 +116,7 @@ public class CSVTableManager : MonoSingleton<CSVTableManager>
 
     public void AddTableData()
     {
-        CSVExporter.QuestionTableWrite($"{PersistentDataPath}/QuestionTable.csv");
+        //CSVExporter.QuestionTableWrite($"{PersistentDataPath}/QuestionTable.csv");
     }
 
 

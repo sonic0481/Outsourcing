@@ -67,64 +67,58 @@ public class CSVReader
         }
 
         callback(list);
+    }
 
+    public static void ReadResources(string file, System.Action<List<Dictionary<string, string>>> callback, Action onFailed)
+    {
+        string fullPath = $"Table/{file}";
+        var list = new List<Dictionary<string, string>>();        
 
-            //Addressables.LoadAssetsAsync<TextAsset>(file,
-            //(asset) =>
-            //{
-            //    if (asset == null)
-            //    {
-            //        onFailed();
-            //        return;
-            //    }
+        var asset = Resources.Load<TextAsset>(fullPath);        
 
-            //    var lines = Regex.Split(asset.text, LINE_SPLIT_RE);
+        if (null == asset)
+        {
+            onFailed?.Invoke();
+            return;
+        }
 
-            //    //if (lines.Length <= 1) return list;
+        var lines = Regex.Split(asset.text, LINE_SPLIT_RE);
 
-            //    var header = Regex.Split(lines[0], SPLIT_RE);
-            //    for (var i = 1; i < lines.Length; i++)
-            //    {
-            //        var values = Regex.Split(lines[i], SPLIT_RE);
-            //        if (values.Length == 0 || values[0] == "") continue;
+        //if (lines.Length <= 1) return list;
 
-            //        var entry = new Dictionary<string, string>();
-            //        for (var j = 0; j < header.Length && j < values.Length; j++)
-            //        {
-            //            string value = values[j];
-            //            value = value.TrimStart(TRIM_CHARS).TrimEnd(TRIM_CHARS).Replace("\\", "");
+        var header = Regex.Split(lines[0], SPLIT_RE);
+        for (var i = 2; i < lines.Length; i++)
+        {
+            var values = Regex.Split(lines[i], SPLIT_RE);
+            if (values.Length == 0 || values[0] == "") continue;
 
-            //            value = value.Replace("<br>", "\n"); // 추가된 부분. 개행문자를 \n대신 <br>로 사용한다.
-            //            value = value.Replace("<c>", ",");
-            //            value = value.Replace("NONE", string.Empty);
+            var entry = new Dictionary<string, string>();
+            for (var j = 0; j < header.Length && j < values.Length; j++)
+            {
+                string value = values[j];
+                value = value.TrimStart(TRIM_CHARS).TrimEnd(TRIM_CHARS).Replace("\\", "");
 
-            //            //object finalvalue = value;
-            //            //int n;
-            //            //float f;
-            //            //if (int.TryParse(value, out n))
-            //            //{
-            //            //    finalvalue = n;
-            //            //}
-            //            //else if (float.TryParse(value, out f))
-            //            //{
-            //            //    finalvalue = f;
-            //            //}
-            //            entry[header[j]] = value; //finalvalue;
-            //        }
-            //        list.Add(entry);
-            //    }
+                value = value.Replace("<br>", "\n"); // 추가된 부분. 개행문자를 \n대신 <br>로 사용한다.
+                value = value.Replace("<c>", ",");
+                value = value.Replace("NONE", string.Empty);
 
-            //    callback(list);
-            //});
-        //string filePath = string.Format("{0}/Table/{1}.csv", Application.streamingAssetsPath, file);
+                //object finalvalue = value;
+                //int n;
+                //float f;
+                //if (int.TryParse(value, out n))
+                //{
+                //    finalvalue = n;
+                //}
+                //else if (float.TryParse(value, out f))
+                //{
+                //    finalvalue = f;
+                //}
+                entry[header[j]] = value; //finalvalue;
+            }
+            list.Add(entry);
+        }
 
-        //var sr = new StreamReader(filePath);
-        //string data = sr.ReadToEnd();
-        //sr.Close();
-        //TextAsset data = Resources.Load(filePath) as TextAsset;
-
-
-        //return list;
+        callback(list);
     }
 
     public static List<string> ReadStringFilter(string file)

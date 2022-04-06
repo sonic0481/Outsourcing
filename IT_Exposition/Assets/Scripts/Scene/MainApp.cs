@@ -5,10 +5,12 @@ using UnityEngine;
 public class MainApp : MonoBehaviour
 {
     [SerializeField] SceneManager sceneMgr;
-    
 
-    void Start()
+    private void Awake()
     {
-        sceneMgr.InitScene();
-    }    
+        CSVTableManager.Instance.InitTable(() => {
+            DataManager.Instance.InitializeData();
+            sceneMgr.InitScene();            
+        });
+    }
 }

@@ -15,13 +15,13 @@ public class SceneManager : MonoBehaviour
         clickSound = GetComponent<AudioSource>();
 
         for (int i = 0; i < _scenes.Length; ++i)
-            _scenes[i].AwakeInit(this);
+            _scenes[i]?.AwakeInit(this);
     }    
 
     public void InitScene()
     {
         for (int i = 0; i < _scenes.Length; ++i)
-            _scenes[i].Init();
+            _scenes[i]?.Init();
 
         _currentScene = SCENE.TITLE;
         SetScene(_currentScene);
@@ -33,18 +33,21 @@ public class SceneManager : MonoBehaviour
 
         for(int i = 0; i < _scenes.Length; ++i)
         {
+            if (null == _scenes[i])
+                continue;
+
             if(scene == (SCENE)i)
             {
-                if(false == _scenes[i].gameObject.activeSelf)
+                if(false == _scenes[i]?.gameObject.activeSelf)
                 {
                     _scenes[i].gameObject.SetActive(true);
                     _scenes[i].On();
-                }
-                else
-                {
-                    if (_scenes[i].gameObject.activeSelf)
-                        _scenes[i].gameObject.SetActive(false);
-                }
+                }                
+            }
+            else
+            {
+                if (_scenes[i].gameObject.activeSelf)
+                    _scenes[i].gameObject.SetActive(false);
             }
         }
     }
@@ -84,9 +87,8 @@ public class SceneManager : MonoBehaviour
 
     public void FinishUser()
     {
-        CSVTableManager.Instance.AddTableData();        
-        ForceScene(SCENE.TITLE);
-    }
+        InitScene();
+    }    
 
     public void OnClickSound()
     {

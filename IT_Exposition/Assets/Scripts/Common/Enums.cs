@@ -6,13 +6,13 @@ public enum AGE
 
 public enum QUESTION
 {
-    Q1, Q2, Q_END
+    Q1, Q2, Q_3, Q_END
 }
 
 public enum ANSWER
 {
     NONE = -1,
-    NO, YES
+    ANSWER_1, ANSWER_2, ANSWER_3, ANSWER_4
 }
 
 public enum GIFTS
@@ -24,4 +24,9 @@ public enum GIFTS
 public enum SCENE
 {
     TITLE, INFORMATION, QUESTION_1, QUESTION_2, QUESTION_3, GIFT, RESULT, MANAGE, END
+}
+
+public enum EVENT
+{
+    DIGITAL, PYTHON, LINUX, SEARCH, SNS, END
 }

@@ -7,6 +7,7 @@ using UnityEngine;
 
 public class CSVExporter
 {
+    /*
     public static void QuestionTableWrite(string path)
     {
         //List<string> dataList = new List<string>();
@@ -41,6 +42,7 @@ public class CSVExporter
 
         CSVTableManager.Instance.GetTable<DefQuestionTable>().AddData(dicData);
     }
+    */
     
     public static void UpdateGiftsData(int index)
     {
