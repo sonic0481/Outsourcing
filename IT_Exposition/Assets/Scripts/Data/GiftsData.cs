@@ -2,27 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public struct GiftInfo
-{
-    public GIFTS type;
-    public string name;    
-    public Vector2[] angle;
-
-    public GiftInfo(GIFTS _type, string _name, Vector2[] _angle)
-    {
-        type = _type;
-        name = _name;
-        angle = _angle;
-    }
-}
-
 public class GiftsData 
 {
     #region Gift
     const string TOTAL = "_Total";
     const string GIVE = "_Give";
-
-    Dictionary<GIFTS, GiftInfo> _dicGiftInfos = new Dictionary<GIFTS, GiftInfo>();
     #endregion
 
     #region User Setting
@@ -32,15 +16,7 @@ public class GiftsData
 
     public bool CheatEnable { get; set; }
     public GIFTS CheatGift { get; set; }
-    #endregion
-
-    public string WinningGiftName()
-    {
-        if (GIFTS.START > WinningGift || GIFTS.END <= WinningGift)
-            return string.Empty;        
-        else
-            return _dicGiftInfos[WinningGift].name;        
-    }
+    #endregion    
 
     public string GetUserReceiptText()
     {
@@ -55,12 +31,11 @@ public class GiftsData
             {
                 switch (g)
                 {
-                    case GIFTS.GUNBAM: Update_Total(g, 100); break;
-                    case GIFTS.STARBUKS: Update_Total(g, 100); break;
-                    case GIFTS.BBASAK: Update_Total(g, 100); break;
-                    case GIFTS.MAGNET: Update_Total(g, 200); break;
-                    case GIFTS.FISHCAKE: Update_Total(g, 200); break;
-                    case GIFTS.BUDS: Update_Total(g, 8); break;
+                    case GIFTS.STARBUCKS: Update_Total(g, 100); break;
+                    case GIFTS.HUMIDIFIER: Update_Total(g, 100); break;
+                    case GIFTS.POSTIT: Update_Total(g, 100); break;
+                    case GIFTS.MEMO: Update_Total(g, 100); break;
+                    case GIFTS.MEGASTUDY: Update_Total(g, 100); break;
                 }
 
                 Update_Give(g, 0);
@@ -71,15 +46,6 @@ public class GiftsData
 
     public void AwakeInit()
     {
-        _dicGiftInfos.Add(GIFTS.GUNBAM, new GiftInfo(GIFTS.GUNBAM, "군밤 1봉지\n교환권", new Vector2[1] { new Vector2(-25f, 3f) } ));
-        _dicGiftInfos.Add(GIFTS.STARBUKS, new GiftInfo(GIFTS.STARBUKS, "스타벅스\n5천원권", new Vector2[1] { new Vector2(50f, 72f) } ));
-        _dicGiftInfos.Add(GIFTS.BBASAK, new GiftInfo(GIFTS.BBASAK, "빠삭이 1개\n교환권", new Vector2[1] { new Vector2(115f, 140f) }));
-        _dicGiftInfos.Add(GIFTS.MAGNET, new GiftInfo(GIFTS.MAGNET, "태종대\n마그넷", new Vector2[1] { new Vector2(188f, 212f) }));
-        _dicGiftInfos.Add(GIFTS.FISHCAKE, new GiftInfo(GIFTS.FISHCAKE, "어묵/물떡 1꼬지\n교환권", new Vector2[1] { new Vector2(260f, 285f) }));
-        _dicGiftInfos.Add(GIFTS.BUDS, new GiftInfo(GIFTS.BUDS, "버즈\n라이프", new Vector2[5] {
-            new Vector2(18f, 32f), new Vector2(90f, 98f), new Vector2(157f, 171f), new Vector2(230f, 242f), new Vector2(302f, 318f)
-        }) );
-
         for (GIFTS g = GIFTS.START; g < GIFTS.END; ++g)
         {
             SetDefaultGiftsData(g);
@@ -116,14 +82,6 @@ public class GiftsData
         }
 
         return winGift;
-    }
-
-    public Vector2[] GetAngle(GIFTS gift)
-    {
-        if (GIFTS.START > gift || GIFTS.END <= gift)
-            return new Vector2[1] { new Vector2(0f, 0f) };
-
-        return _dicGiftInfos[gift].angle;        
     }
 
     #region Get Method
@@ -227,21 +185,63 @@ public class GiftsData
     #region Gifts Text
     public string GetName(GIFTS gift)
     {
-        switch (gift)
-        {
-            case GIFTS.GUNBAM: return "군밤";
-            case GIFTS.STARBUKS: return "스타벅스";
-            case GIFTS.BBASAK: return "빠삭이";
-            case GIFTS.MAGNET: return "마그넷";
-            case GIFTS.FISHCAKE: return "어묵/떡";
-            case GIFTS.BUDS: return "버즈";
-        }
-        return "NONE";
+        var table = CSVTableManager.Instance.GetTable<DefGiftsListTable>();
+
+        var data = table.GetData(gift);
+
+        return data?.Name ?? "NONE";
+    }
+
+    public string GetFullName(GIFTS gift)
+    {
+        var table = CSVTableManager.Instance.GetTable<DefGiftsListTable>();
+
+        var data = table.GetData(gift);
+
+        return data?.FullName ?? "NONE";
     }
 
     public string GetUserGiftText()
     {
         return GetName(WinningGift);
+    }
+
+    public int[] GetGiftWins(int winCount)
+    {
+        var table = CSVTableManager.Instance.GetTable<DefGiftsListTable>();
+        var dataList = table.GetDataList();
+
+        int[] wins = new int[(int)GIFTS.END];
+
+        while (dataList.MoveNext())
+        {
+            var data = dataList.Current;
+            GIFTS key = (GIFTS)data.Index;
+            int win = 0;            
+
+            if(0 < Get_Remain(key))
+            {
+                switch (winCount)
+                {
+                    case 0:
+                        win = data.Win_0;
+                        break;
+                    case 1:
+                        win = data.Win_1;
+                        break;
+                    case 2:
+                        win = data.Win_2;
+                        break;
+                    case 3:
+                        win = data.Win_3;
+                        break;
+                }
+            }           
+
+            wins[data.Index] = win;
+        }
+
+        return wins;
     }
     #endregion
 }

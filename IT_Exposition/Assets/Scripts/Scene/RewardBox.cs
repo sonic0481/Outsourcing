@@ -22,15 +22,30 @@ public class RewardBox : MonoBehaviour
 
     System.Action                   flipCallback;
     System.Action                   completeCallback;
+    System.Action<int>              clickCallback;
+    int                             index;
 
-    public void Init(System.Action c_callback, System.Action f_callback)
+    DefGiftsListTable               giftTable;
+
+    public void Init(int _index, System.Action c_callback, System.Action f_callback, System.Action<int> click_callback)
     {
+        giftTable = CSVTableManager.Instance.GetTable<DefGiftsListTable>();
+
+        index = _index;
+
         completeCallback = c_callback;
         flipCallback = f_callback;
+        clickCallback = click_callback;
 
-        giftBtn.onClick.AddListener(() => {
+        giftBtn.onClick.AddListener(() => {            
+            clickCallback?.Invoke(index);
             SetState(RewardState.FLIP);
-        });
+        });        
+    }
+
+    public void ResetBox()
+    {
+        SetState(RewardState.BASE);
     }
 
     public void SetState(RewardState state)
@@ -62,8 +77,9 @@ public class RewardBox : MonoBehaviour
         }
     }
 
-    public void SetReward(string strReward)
+    public void SetReward(GIFTS gift)
     {
-        reward_Text.text = strReward;
+        var data = giftTable.GetData(gift);
+        reward_Text.text = data.FullName;
     }
 }

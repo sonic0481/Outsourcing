@@ -16,7 +16,7 @@ public class CSVTableManager : MonoSingleton<CSVTableManager>
     public DefGiftsListTable GiftsListTable => GetTable<DefGiftsListTable>();
 
 
-    private int checkCount = 1;
+    private int checkCount = 2;
     private int loadCount = 0;
     public bool IsTableLoadClear { get { return checkCount <= loadCount; } }
 
@@ -95,7 +95,8 @@ public class CSVTableManager : MonoSingleton<CSVTableManager>
     {
         loadCount = 0;
 
-        OnlyLoadTable<DefQuestionTable>("QuestionTable", callback);
+        OnlyLoadTable<DefQuestionTable>("QuestionTable");
+        OnlyLoadTable<DefGiftsListTable>("GiftTable", callback);
     }
 
     //private void SetTableData<T>(string path) where T : new()

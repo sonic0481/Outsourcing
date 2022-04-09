@@ -18,7 +18,7 @@ public enum ANSWER
 public enum GIFTS
 {
     NONE = -1, START = 0,
-    GUNBAM = 0, STARBUKS, BBASAK, MAGNET, FISHCAKE, BUDS, END
+    STARBUCKS = 0, HUMIDIFIER, POSTIT, MEMO, MEGASTUDY, END
 }
 
 public enum SCENE

@@ -18,9 +18,6 @@ public struct QuestionInfo
 
 public class QuestionData
 {
-    private QuestionInfo[] _questionInfo = new QuestionInfo[(int)QUESTION.Q_END];
-    public QuestionInfo GetQuestion(QUESTION type) { return _questionInfo[(int)type]; }
-
     private ANSWER[] _answerInfo = new ANSWER[(int)QUESTION.Q_END];
     public void SetAnswer(QUESTION questionType, ANSWER answer) { _answerInfo[(int)questionType] = answer; }
     public ANSWER GetAnswer(QUESTION questionType) { return _answerInfo[(int)questionType]; }
@@ -34,8 +31,7 @@ public class QuestionData
 
     public void AwakeInit()
     {
-        //_questionInfo[(int)QUESTION.Q1] = new QuestionInfo(QUESTION.Q1, "전반적으로 만족 하시나요?");
-        //_questionInfo[(int)QUESTION.Q2] = new QuestionInfo(QUESTION.Q2, "앱을 추천할 의향이 있으신가요?");        
+        
     }
 
     public void OnInit()
